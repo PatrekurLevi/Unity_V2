@@ -15,6 +15,7 @@ public class FollowPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Lætur myndavélina elta playerinn.
         transform.position = player.position + offset;
     }
 }

@@ -13,6 +13,7 @@ public class CoinSpin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Lætur peninginn snúast í hringi
         transform.Rotate(new Vector3(0, 80, 0) * Time.deltaTime);
     }
 }

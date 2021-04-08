@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
     private float speed = 14.0f;
     private float turnSpeed = 150.0f;
     private float horizontalInput;
@@ -17,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public Text livetext;
     public Text GameOver;
     public Text StartGame;
-    // Start is called before the first frame update
+    public Text WonGame;
     public bool isGrounded;
     public bool isAlive;
     public Transform Target;
@@ -30,12 +29,11 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionStay()
     {
+        //Kíkir hvort Player sé tengdur jörð
         isGrounded = true;
     }
 
 
-
-    // Update is called once per frame
     void Update()
     {
         if (isAlive == true)
@@ -46,28 +44,29 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         forwardInput = Input.GetAxis("Vertical");
 
-        // We move the vehicle forward
+        // Player áfram
         transform.Translate(Vector3.forward * Time.deltaTime * speed * forwardInput);
-        // We turn the vehicle
+        // Snúa player
         transform.Rotate(Vector3.up * Time.deltaTime * turnSpeed * horizontalInput);
-
-        //transform.Translate(Vector3.up * Time.deltaTime * speed * forwardInput);
+        // Leyfir Player að hoppa
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
+            {
 
             rb.AddForce(jump * jumpForce, ForceMode.Impulse);
             isGrounded = false;
-        }
+            }
         }
 
+        //Lives
         livetext.text = "Lives: " + live;
 
         if (live == 0)
         {
+        //Ef player hefur 0 life = Game Over
             GameOver.gameObject.SetActive(true);
             isAlive = false;
         }
-
+        //Ef playerinn missir öll líf = Reload og aftur 2 Líf
         if (live == 0 && Input.GetKeyDown(KeyCode.Space))
         {
             GameOver.gameObject.SetActive(false);
@@ -80,25 +79,33 @@ public class PlayerMovement : MonoBehaviour
             StartGame.gameObject.SetActive(false);
             isAlive = true;
         }
+        //Ef playerinn nær 14 stigum þá vinnur hann.
+        if (live == 14 )
+        {
+            WonGame.gameObject.SetActive(true);
+
+        }
+
     }
 
 
     
     private void OnCollisionEnter(Collision collision)
     {
+        //Ef playerinn rekst við hindrun þá respawnast hann.
         if (collision.gameObject.tag == "Respawn")
         {
-            //Destroy(gameObject);
+            //Playerinn missir eitt líf
             live = live - 1;
             SceneManager.LoadScene("SampleScene");
         }
-
+        //Ef playerinn rekst á coin fær hann stig.
         if (collision.gameObject.tag == "Coin")
         {
 
             live = live + 1;
         }
-
+        //Ef playerinn fer yfir hvítu 'línuna' færist hann á næsta stig.
         if (collision.gameObject.tag == "Finish")
         {
 
